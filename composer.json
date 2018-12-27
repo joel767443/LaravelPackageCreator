@@ -25,11 +25,12 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "@php artisan key:generate --ansi"
+            "@php artisan migrate",
+            "touch database/database.sqlite"
         ],
         "post-update-cmd": [
-            "touch database/database.sqlite",
-            "@php artisan key:generate --ansi"
+            "@touch database/database.sqlite",
+            "@php artisan migrate"
         ]
     }
 }
