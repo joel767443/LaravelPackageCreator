@@ -17,5 +17,10 @@
                 "YoweliKachala\\PackageGenerator\\PackageGeneratorServiceProvider"
             ]
         }
+    },
+    "autoload": {
+        "psr-4": {
+            "YoweliKachala\\PackageGenerator\\": "src/"
+        }
     }
 }
