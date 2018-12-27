@@ -1,0 +1,21 @@
+{
+    "name": "yowelikachala/packagegenerator",
+    "description": "Package generator",
+    "type": "library",
+    "license": "MIT'",
+    "authors": [
+        {
+            "name": "Yoweli Kachala",
+            "email": "yoweli@double-eye.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "YoweliKachala\\PackageGenerator\\PackageGeneratorServiceProvider"
+            ]
+        }
+    }
+}
