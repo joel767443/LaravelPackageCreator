@@ -4,6 +4,12 @@ namespace YoweliKachala\PackageGenerator;
 
 use Illuminate\Support\ServiceProvider;
 
+use YoweliKachala\PackageGenerator\Helpers\SetupHelper;
+
+/**
+ * Class PackageGeneratorServiceProvider
+ * @package YoweliKachala\PackageGenerator
+ */
 class PackageGeneratorServiceProvider extends  ServiceProvider {
 
     /**
@@ -15,6 +21,8 @@ class PackageGeneratorServiceProvider extends  ServiceProvider {
     {
         $this->loadRoutesFrom(__DIR__.'/routes/routes.php');
         $this->loadViewsFrom(__DIR__.'/views', 'PackageGenerator');
+
+        SetupHelper::setupEnvFile();
     }
 
     /**

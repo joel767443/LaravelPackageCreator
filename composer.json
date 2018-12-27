@@ -6,7 +6,7 @@
     "authors": [
         {
             "name": "Yoweli Kachala",
-            "email": "yoweli@double-eye.com"
+            "email": "yowelikachala@gmail.com"
         }
     ],
     "minimum-stability": "stable",
@@ -22,5 +22,10 @@
         "psr-4": {
             "YoweliKachala\\PackageGenerator\\": "src/"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php artisan key:generate --ansi"
+        ]
     }
 }
