@@ -8,6 +8,9 @@ namespace YoweliKachala\PackageGenerator\Helpers;
  */
 class SetupHelper
 {
+    /**
+     * Setting up the package for scaffolding
+     */
     public static function setupEnvFile()
     {
         if (!file_exists(database_path() . '/database.sqlite')) {
