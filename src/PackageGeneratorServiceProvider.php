@@ -12,6 +12,10 @@ use YoweliKachala\PackageGenerator\Helpers\SetupHelper;
  */
 class PackageGeneratorServiceProvider extends  ServiceProvider {
 
+    protected $commands = [
+        'YoweliKachala\PackageGenerator\Commands\SetupCommand'
+    ];
+
     /**
      * Bootstrap any application services.
      *
@@ -32,7 +36,7 @@ class PackageGeneratorServiceProvider extends  ServiceProvider {
      */
     public function register()
     {
-
+        $this->commands($this->commands);
     }
 
 }
