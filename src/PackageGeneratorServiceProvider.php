@@ -4,6 +4,7 @@ namespace YoweliKachala\PackageGenerator;
 
 use Illuminate\Support\ServiceProvider;
 
+use YoweliKachala\PackageGenerator\Commands\SetupCommand;
 use YoweliKachala\PackageGenerator\Helpers\SetupHelper;
 
 /**
@@ -12,10 +13,6 @@ use YoweliKachala\PackageGenerator\Helpers\SetupHelper;
  */
 class PackageGeneratorServiceProvider extends  ServiceProvider {
 
-    protected $commands = [
-        'YoweliKachala\PackageGenerator\Commands\SetupCommand'
-    ];
-
     /**
      * Bootstrap any application services.
      *
@@ -23,10 +20,16 @@ class PackageGeneratorServiceProvider extends  ServiceProvider {
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__.'/routes/routes.php');
-        $this->loadViewsFrom(__DIR__.'/views', 'PackageGenerator');
+        $this->loadRoutesFrom(__DIR__ . '/routes/routes.php');
+        $this->loadViewsFrom(__DIR__ . '/views', 'PackageGenerator');
 
         SetupHelper::setupEnvFile();
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                SetupCommand::class
+            ]);
+        }
     }
 
     /**
@@ -36,7 +39,6 @@ class PackageGeneratorServiceProvider extends  ServiceProvider {
      */
     public function register()
     {
-        $this->commands($this->commands);
     }
 
 }
