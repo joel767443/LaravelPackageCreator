@@ -2,7 +2,7 @@
     "name": "yowelikachala/packagegenerator",
     "description": "Package generator",
     "type": "library",
-    "license": "MIT'",
+    "license": "MIT",
     "authors": [
         {
             "name": "Yoweli Kachala",
