@@ -24,7 +24,7 @@ class SetupHelper
 
         if (strpos(file_get_contents(base_path() . '/' . '.env'), 'DB_DATABASE=homestead') !== false) {
             $str = file_get_contents(base_path() . '/' . '.env');
-            $str = str_replace("DB_DATABASE=homestead", "DB_DATABASE=" . base_path() . "database/database.sqlite", $str);
+            $str = str_replace("DB_DATABASE=homestead", "DB_DATABASE=" . base_path() . "/database/database.sqlite", $str);
             $str = str_replace("DB_CONNECTION=mysql", "DB_CONNECTION=sqlite", $str);
             file_put_contents(base_path() . '/' . '.env', $str);
         }
