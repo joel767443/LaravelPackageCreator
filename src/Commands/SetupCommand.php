@@ -19,6 +19,10 @@ class SetupCommand extends Command
      */
     protected $signature = 'setup:packagegenerator';
 
+    /** @var bool  */
+    protected $hidden = true;
+
+
     /**
      * @var string
      */

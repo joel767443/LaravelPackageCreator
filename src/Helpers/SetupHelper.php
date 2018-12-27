@@ -2,6 +2,8 @@
 
 namespace YoweliKachala\PackageGenerator\Helpers;
 
+use Illuminate\Support\Facades\DB;
+
 /**
  * Class SetupHelper
  * @package YoweliKachala\PackageGenerator\Helpers
@@ -15,6 +17,7 @@ class SetupHelper
     {
         if (!file_exists(database_path() . '/database.sqlite')) {
             exec('touch ' . database_path() . '/database.sqlite');
+            Self::migrateDb();
         }
 
         if (file_exists(base_path() . '/' . '.env') && !file_exists(base_path() . '/' . '.env-bkp')) {
@@ -31,5 +34,14 @@ class SetupHelper
             $str = str_replace("DB_CONNECTION=mysql", "DB_CONNECTION=sqlite", $str);
             file_put_contents(base_path() . '/' . '.env', $str);
         }
+    }
+
+    /**
+     * seend package db
+     */
+    private static function migrateDb()
+    {
+        $path = __DIR__ . '/packageDb.sql';
+        DB::unprepared(file_get_contents($path));
     }
 }
