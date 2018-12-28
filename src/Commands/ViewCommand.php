@@ -6,6 +6,10 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * Class ViewCommand
+ * @package YoweliKachala\PackageGenerator\Commands
+ */
 class ViewCommand extends Command
 {
 
@@ -29,11 +33,11 @@ class ViewCommand extends Command
      * @var array
      */
     protected $views = [
-         __DIR__ . '/stubs/views/add.stub' => '/views/admin/model/add.blade.php',
-         __DIR__ . '/stubs/views/edit.stub' => '/views/admin/model/edit.blade.php',
-         __DIR__ . '/stubs/views/form.stub' => '/views/admin/model/form.blade.php',
-         __DIR__ . '/stubs/views/index.stub' => '/views/admin/model/index.blade.php',
-         __DIR__ . '/stubs/views/view.stub' => '/views/admin/model/view.blade.php',
+        __DIR__ . '/stubs/views/add.stub' => '/views/admin/model/add.blade.php',
+        __DIR__ . '/stubs/views/edit.stub' => '/views/admin/model/edit.blade.php',
+        __DIR__ . '/stubs/views/form.stub' => '/views/admin/model/form.blade.php',
+        __DIR__ . '/stubs/views/index.stub' => '/views/admin/model/index.blade.php',
+        __DIR__ . '/stubs/views/view.stub' => '/views/admin/model/view.blade.php',
     ];
 
     /**
@@ -67,7 +71,7 @@ class ViewCommand extends Command
             if (!file_exists($value)) {
 
                 copy($key,
-                    resource_path() . str_replace('model', strtolower($modelName),$value)
+                    resource_path() . str_replace('model', strtolower($modelName), $value)
                 );
             }
         }

@@ -96,7 +96,7 @@ class PackageGeneratorController extends Controller
 
         $viewPath = resource_path() . '/views/admin/' . strtolower($name);
 
-        if (! is_dir($viewPath)) {
+        if (!is_dir($viewPath)) {
 
             File::makeDirectory($viewPath, $mode = 0755, true, true);
 
