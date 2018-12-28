@@ -46,6 +46,8 @@ class SetupCommand extends Command
 
         SetupHelper::setupEnvFile();
 
+        Artisan::call('key:generate');
+
         Artisan::call('migrate');
 
         exec('xdg-open http://localhost:8000/project');
