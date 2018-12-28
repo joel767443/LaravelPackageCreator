@@ -28,7 +28,7 @@
 <div id="app">
     <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
+            <a target="_blank" class="navbar-brand" href="{{ url('/') }}">
                 {{ config('app.name', 'Package Generator') }}
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"

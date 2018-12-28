@@ -83,6 +83,8 @@ class PackageGeneratorController extends Controller
 
             Artisan::call('make:model', ['name' => "Models/" . $module->name]);
 
+            $this->createMenuItem($module->name);
+
         }
 
     }
@@ -103,6 +105,32 @@ class PackageGeneratorController extends Controller
         }
 
         return $viewPath;
+    }
+
+
+    /**
+     * @param $modelName
+     */
+    private function createMenuItem($modelName)
+    {
+
+        $replaceString = "<span style='display: none'>--menu-items--</span>";
+
+        $fullUrl = "<li class='nav-item'><a href= '{{ url('" . $modelName . "') }}' class='nav-link'>$modelName</a></li>";
+
+        $oldString = "$replaceString\n";
+
+        $newString = "$fullUrl\n $replaceString\n";
+
+        $fileName = resource_path() . '/views/layouts/app.blade.php';
+        //read the entire string
+        $file = file_get_contents($fileName);
+
+        //replace something in the file string - this is a VERY simple example
+        $file = str_replace("$oldString", "$newString", $file);
+
+        //write the entire string
+        file_put_contents($fileName, $file);
     }
 
 }
