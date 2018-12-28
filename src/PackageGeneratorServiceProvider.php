@@ -13,7 +13,8 @@ class PackageGeneratorServiceProvider extends ServiceProvider
 
     protected $commands = [
         'YoweliKachala\PackageGenerator\Commands\SetupCommand',
-        'YoweliKachala\PackageGenerator\Commands\ControllerCommand'
+        'YoweliKachala\PackageGenerator\Commands\ControllerCommand',
+        'YoweliKachala\PackageGenerator\Commands\ViewCommand'
     ];
 
     /**

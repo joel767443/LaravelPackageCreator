@@ -3,10 +3,7 @@
 namespace YoweliKachala\PackageGenerator\Commands;
 
 
-use Illuminate\Support\Str;
-use InvalidArgumentException;
 use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Input\InputOption;
 
 
 class ControllerCommand extends GeneratorCommand
@@ -48,39 +45,20 @@ class ControllerCommand extends GeneratorCommand
      */
     protected function buildClass($name)
     {
-        $controllerNamespace = $this->getNamespace($name);
+
+        $modelName = str_replace("App\\Http\\Controllers\\", '', $name);
+        $modelName = str_replace('Controller', '', $modelName);
 
         $replace = [];
 
-        $replace["use {$controllerNamespace}\Controller;\n"] = '';
+        $replace['DummyFullModelClass'] = 'App\\Models\\' . $modelName;
+        $replace['DummyModelClass'] = $modelName;
+        $replace['$DummyModelVariable'] = '$' . ucfirst($modelName);
 
         return str_replace(
             array_keys($replace), array_values($replace), parent::buildClass($name)
         );
     }
-
-    /**
-     * Build the replacements for a parent controller.
-     *
-     * @return array
-     */
-    protected function buildParentReplacements()
-    {
-        $parentModelClass = $this->parseModel($this->option('parent'));
-
-        if (! class_exists($parentModelClass)) {
-            if ($this->confirm("A {$parentModelClass} model does not exist. Do you want to generate it?", true)) {
-                $this->call('make:model', ['name' => $parentModelClass]);
-            }
-        }
-
-        return [
-            'ParentDummyFullModelClass' => $parentModelClass,
-            'ParentDummyModelClass' => class_basename($parentModelClass),
-            'ParentDummyModelVariable' => lcfirst(class_basename($parentModelClass)),
-        ];
-    }
-
 
     /**
      * Get the stub file for the generator.
