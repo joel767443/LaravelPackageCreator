@@ -17,6 +17,9 @@ class ControllerCommand extends GeneratorCommand
     protected $name = 'create:controller';
 
 
+    /** @var bool  */
+    protected $hidden = true;
+
     /**
      * The type of class being generated.
      *

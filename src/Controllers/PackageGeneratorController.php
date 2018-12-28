@@ -66,16 +66,16 @@ class PackageGeneratorController extends Controller
         /** Create models and repository folders */
         if (!file_exists($modelsPath)) {
 
-            File::makeDirectory($modelsPath, $mode = 0644, true, true);
+            File::makeDirectory($modelsPath, $mode = 0755, true, true);
 
-            File::makeDirectory($reposPath, $mode = 0644, true, true);
+            File::makeDirectory($reposPath, $mode = 0755, true, true);
 
         }
 
 
         foreach ($modules as $module) {
 
-            $viewPath = $this->createDirectory($module->name);
+            $this->createDirectory($module->name);
 
             Artisan::call('create:view', ['modelName' => $module->name]);
 
