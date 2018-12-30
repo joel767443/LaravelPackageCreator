@@ -74,6 +74,9 @@ class ViewCommand extends Command
                 copy($key,
                     resource_path() . str_replace('model', strtolower($modelName), $value)
                 );
+
+                $this->updateViewPlaceHolders($modelName, $value);
+
             }
         }
     }
@@ -100,6 +103,29 @@ class ViewCommand extends Command
         return array(
             array('modelName', null, InputOption::VALUE_REQUIRED, 'Age of the new user')
         );
+    }
+
+    /**
+     * @param $modelName
+     * @param $value
+     */
+    private function updateViewPlaceHolders($modelName, $value)
+    {
+        // replace placeholders
+        $oldList = 'list';
+        $oldItem = 'item';
+
+        $newList = str_plural(strtolower($modelName));
+        $newItem = strtolower($modelName);
+
+        //get the file
+        $fileName = resource_path() . str_replace('model', strtolower($modelName), $value);
+        //read the entire string
+        $file = file_get_contents($fileName);
+        $file = str_replace("$oldList", "$newList", $file);
+        $file = str_replace("$oldItem", "$newItem", $file);
+        //write the entire string
+        file_put_contents($fileName, $file);
     }
 
 }

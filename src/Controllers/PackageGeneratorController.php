@@ -3,6 +3,8 @@
 namespace YoweliKachala\PackageGenerator\Controllers;
 
 use App\Http\Controllers\Controller;
+use Faker\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -99,7 +101,7 @@ class PackageGeneratorController extends Controller
 
         }
 
-        $this->runNewMigrations();
+        $this->runNewMigrations($modules);
 
     }
 
@@ -107,7 +109,7 @@ class PackageGeneratorController extends Controller
     /**
      * run new migrations
      */
-    private function runNewMigrations()
+    private function runNewMigrations($modules)
     {
         Artisan::call('migrate');
     }

@@ -19,6 +19,7 @@ class DummyClass extends Controller
 
         $viewAttributes = [
             'title' => 'titlePlaceHolder',
+            'model' => 'viewFolder',
             'DummyModelVariables' => $DummyModelVariables
         ];
 
@@ -32,7 +33,12 @@ class DummyClass extends Controller
      */
     public function create()
     {
-        //
+         $viewAttributes = [
+            'title' => 'titlePlaceHolder',
+            'model' => 'viewFolder',
+         ];
+
+         return view('admin/viewFolder/add', $viewAttributes);
     }
 
     /**
@@ -54,7 +60,12 @@ class DummyClass extends Controller
      */
     public function show(DummyModelClass $DummyModelVariable)
     {
-        //
+        $viewAttributes = [
+            'title' => 'titlePlaceHolder',
+            'model' => 'viewFolder',
+        ];
+
+        return view('admin/viewFolder/view', $viewAttributes);
     }
 
     /**
@@ -65,7 +76,12 @@ class DummyClass extends Controller
      */
     public function edit(DummyModelClass $DummyModelVariable)
     {
-        //
+        $viewAttributes = [
+            'title' => 'titlePlaceHolder',
+            'model' => 'viewFolder',
+        ];
+
+        return view('admin/viewFolder/edit', $viewAttributes);
     }
 
     /**
