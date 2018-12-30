@@ -14,7 +14,15 @@ class DummyClass extends Controller
      */
     public function index()
     {
-        //
+
+        $DummyModelVariables = DummyModelClass::all();
+
+        $viewAttributes = [
+            'title' => 'titlePlaceHolder',
+            'DummyModelVariables' => $DummyModelVariables
+        ];
+
+        return view('admin/viewFolder/index', $viewAttributes);
     }
 
     /**

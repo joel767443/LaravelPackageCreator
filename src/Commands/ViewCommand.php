@@ -68,8 +68,9 @@ class ViewCommand extends Command
 
         foreach ($this->views as $key => $value) {
 
-            if (!file_exists($value)) {
+            if (!file_exists(resource_path() . str_replace('model', strtolower($modelName), $value))) {
 
+                /** Create view */
                 copy($key,
                     resource_path() . str_replace('model', strtolower($modelName), $value)
                 );

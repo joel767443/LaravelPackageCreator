@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use YoweliKachala\PackageGenerator\Models\Module;
 use YoweliKachala\PackageGenerator\Models\Project;
+use Illuminate\Filesystem\Filesystem;
 
 /**
  * Class PackageGeneratorController
@@ -23,7 +25,6 @@ class PackageGeneratorController extends Controller
      */
     public function index(Request $request)
     {
-
         $project = Project::first();
 
         $modules = Module::all();
@@ -37,7 +38,6 @@ class PackageGeneratorController extends Controller
 
             ];
         }
-
 
         return view('PackageGenerator::index', [
 
@@ -54,7 +54,6 @@ class PackageGeneratorController extends Controller
      */
     public function finish()
     {
-
 
         $modelsPath = base_path() . '/app/Models';
 
@@ -73,20 +72,147 @@ class PackageGeneratorController extends Controller
         }
 
 
+        /** Models need to be recreated in case of changes */
+        $this->clearModels();
+
+        /** Clear old Views */
+        $this->clearViews();
+
+        /** clear old migrations */
+        $this->clearOldMigrations();
+
         foreach ($modules as $module) {
-
-            $this->createDirectory($module->name);
-
-            Artisan::call('create:view', ['modelName' => $module->name]);
-
-            Artisan::call('create:controller', ['name' => $module->name . 'Controller']);
-
-            Artisan::call('make:model', ['name' => "Models/" . $module->name]);
 
             $this->createMenuItem($module->name);
 
+            $this->addRoutes($module->name);
+
+            $this->createDirectory($module->name);
+
+            $this->createViews($module->name);
+
+            $this->createControllers($module->name);
+
+            $this->createModels($module->name);
+
+            $this->createMigration($module->name);
+
         }
 
+        $this->runNewMigrations();
+
+    }
+
+
+    /**
+     * run new migrations
+     */
+    private function runNewMigrations()
+    {
+        Artisan::call('migrate');
+    }
+
+    /**
+     * @param $name
+     */
+    private function createControllers ($name)
+    {
+        /** Clear existing controller */
+        $file = new Filesystem;
+        $file->Delete(base_path() . '/app/Http/Controllers/' . $name . 'Controller.php');
+
+
+        Artisan::call('create:controller', ['name' => $name . 'Controller']);
+    }
+
+    /**
+     * @param $name
+     */
+    private function createMigration($name) {
+        /** Drop table from database */
+        Schema::dropIfExists(str_plural($name));
+        Artisan::call('make:migration', ['name' => "create" . str_plural($name) . '_table']);
+    }
+
+
+    private function clearModels()
+    {
+        /** Clear existing model */
+        $file = new Filesystem;
+        $file->cleanDirectory(base_path() . '/app/Models');
+    }
+
+    private function clearOldMigrations()
+    {
+
+        foreach (File::files(base_path() . '/database/migrations') as $filename) {
+
+            $file = $filename->getFilename();
+
+            if (!str_contains($file , ['create_users', 'create_password_resets'])) {
+                /** Clear existing migrations */
+                File::delete(base_path() . '/database/migrations/' . $file);
+            }
+
+        }
+
+    }
+
+    private function clearViews()
+    {
+        /** Clear existing views */
+        $file = new Filesystem;
+        $file->cleanDirectory(resource_path() . '/views/admin/');
+    }
+
+    /**
+     * @param $name
+     */
+    private function createViews($name)
+    {
+        Artisan::call('create:view', ['modelName' => $name]);
+    }
+
+    /**
+     * @param $name
+     */
+    private function createModels($name)
+    {
+        Artisan::call('make:model', ['name' => "Models/" . $name]);
+
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function add(Request $request)
+    {
+        $projectExists = Project::first();
+
+        if ($projectExists) {
+            $project = $projectExists;
+        } else {
+            $project = new Project();
+            $project->id = 1;
+            $project->project_status = 1;
+            $project->start_date = now();
+        }
+
+        $project->name = $request->input('name');
+
+        $project->save();
+    }
+
+
+    /**
+     * @param Request $request
+     */
+    public function addModule(Request $request)
+    {
+        $module = new Module();
+        $module->id = Module::count() + 1;
+        $module->name = ucfirst($request->input('name'));
+        $module->save();
     }
 
     /**
@@ -116,13 +242,71 @@ class PackageGeneratorController extends Controller
 
         $replaceString = "<span style='display: none'>--menu-items--</span>";
 
-        $fullUrl = "<li class='nav-item'><a href= '{{ url('" . $modelName . "') }}' class='nav-link'>$modelName</a></li>";
+        $fullUrl = "<li class='nav-item'><a href= '{{ url('" . strtolower(str_plural($modelName)) . "') }}' class='nav-link'>" . str_plural($modelName) . "</a></li>";
 
         $oldString = "$replaceString\n";
 
         $newString = "$fullUrl\n $replaceString\n";
 
         $fileName = resource_path() . '/views/layouts/app.blade.php';
+        //read the entire string
+        $file = file_get_contents($fileName);
+
+        if (!str_contains($file , $fullUrl)) {
+
+            //replace something in the file string - this is a VERY simple example
+            $file = str_replace("$oldString", "$newString", $file);
+
+            //write the entire string
+            file_put_contents($fileName, $file);
+        }
+    }
+
+    /**
+     * @param $modelName
+     */
+    private function addRoutes($modelName)
+    {
+        $routes = [
+            'index' => 'get',
+            'create' => 'get',
+            'store' => 'post',
+            'show' => 'get',
+            'edit' => 'get',
+            'update' => 'post',
+            'destroy' => 'get'
+        ];
+
+        foreach ($routes as $route => $method) {
+
+            $this->addRoute($modelName, $route, $method);
+
+        }
+
+    }
+
+    /**
+     * @param $modelName
+     * @param $route
+     * @param $method
+     */
+    private function addRoute($modelName, $route, $method)
+    {
+        $oldString = "//{{replace}}";
+
+        $replaceString = "Route::" . $method . "('$route-" . strtolower($modelName) . "', '" . $modelName . "Controller@" . $route . "');\n";
+
+        if ($route == 'show' || $route == 'edit' || $route == 'destroy') {
+            $replaceString = "Route::" . $method . "('$route-" . strtolower($modelName) . "/{" . strtolower($modelName) . "}', '" . $modelName . "Controller@" . $route . "');\n";
+        }
+
+        if ($route == 'index') {
+            $replaceString = "\nRoute::" . $method . "('" . strtolower(str_plural($modelName)) . "', '" . $modelName . "Controller@" . $route . "');\n";
+        }
+
+        $newString = "$replaceString $oldString";
+
+        $fileName = base_path() . '/routes/web.php';
         //read the entire string
         $file = file_get_contents($fileName);
 

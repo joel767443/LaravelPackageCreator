@@ -50,13 +50,17 @@ class ControllerCommand extends GeneratorCommand
     {
 
         $modelName = str_replace("App\\Http\\Controllers\\", '', $name);
+
         $modelName = str_replace('Controller', '', $modelName);
 
         $replace = [];
 
         $replace['DummyFullModelClass'] = 'App\\Models\\' . $modelName;
         $replace['DummyModelClass'] = $modelName;
-        $replace['$DummyModelVariable'] = '$' . ucfirst($modelName);
+        $replace['titlePlaceHolder'] = $modelName;
+        $replace['$DummyModelVariable'] = '$' . lcfirst($modelName);
+        $replace['viewFolder'] = lcfirst($modelName);
+        $replace['DummyModelVariables'] = lcfirst(str_plural($modelName));
 
         return str_replace(
             array_keys($replace), array_values($replace), parent::buildClass($name)

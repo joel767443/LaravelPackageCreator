@@ -2,6 +2,7 @@
 
 namespace YoweliKachala\PackageGenerator\Helpers;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -17,6 +18,7 @@ class SetupHelper
     {
         if (!file_exists(database_path() . '/database.sqlite')) {
             exec('touch ' . database_path() . '/database.sqlite');
+            exec('chown www-data ' . database_path() . '/database.sqlite');
             Self::migrateDb();
         }
 
@@ -34,6 +36,8 @@ class SetupHelper
             $str = str_replace("DB_CONNECTION=mysql", "DB_CONNECTION=sqlite", $str);
             file_put_contents(base_path() . '/' . '.env', $str);
         }
+
+        Artisan::call('key:generate');
     }
 
     /**
