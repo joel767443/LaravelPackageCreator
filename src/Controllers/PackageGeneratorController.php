@@ -3,8 +3,8 @@
 namespace YoweliKachala\PackageGenerator\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Model;
 use YoweliKachala\PackageGenerator\Commands\SetupCommand;
-use YoweliKachala\PackageGenerator\Helpers\SetupHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -19,7 +19,6 @@ use Illuminate\Filesystem\Filesystem;
  */
 class PackageGeneratorController extends Controller
 {
-
 
     /**
      * @param Request $request
@@ -64,7 +63,6 @@ class PackageGeneratorController extends Controller
         $reposPath = base_path() . '/app/Repositories';
 
         $modules = Module::all();
-
 
         /** Create models and repository folders */
         if (!file_exists($modelsPath)) {
@@ -119,7 +117,7 @@ class PackageGeneratorController extends Controller
     /**
      * @param $name
      */
-    private function createControllers ($name)
+    private function createControllers($name)
     {
         /** Clear existing controller */
         $file = new Filesystem;
@@ -145,13 +143,16 @@ class PackageGeneratorController extends Controller
     /**
      * @param $name
      */
-    private function createMigration($name) {
+    private function createMigration($name)
+    {
         /** Drop table from database */
         Schema::dropIfExists(str_plural($name));
         Artisan::call('make:migration', ['name' => "create" . str_plural($name) . '_table']);
     }
 
-
+    /**
+     * Clear the models to create new ones after an update
+     */
     private function clearModels()
     {
         /** Clear existing model */
@@ -166,7 +167,7 @@ class PackageGeneratorController extends Controller
 
             $file = $filename->getFilename();
 
-            if (!str_contains($file , ['create_users', 'create_password_resets'])) {
+            if (!str_contains($file, ['create_users', 'create_password_resets'])) {
                 /** Clear existing migrations */
                 File::delete(base_path() . '/database/migrations/' . $file);
             }
@@ -175,6 +176,9 @@ class PackageGeneratorController extends Controller
 
     }
 
+    /**
+     * Clear the views to scaffold new ones after an update
+     */
     private function clearViews()
     {
         /** Clear existing views */
@@ -183,7 +187,7 @@ class PackageGeneratorController extends Controller
     }
 
     /**
-     * @param $name
+     * @param String $name
      */
     private function createViews($name)
     {
@@ -233,7 +237,7 @@ class PackageGeneratorController extends Controller
     }
 
     /**
-     * @param $name
+     * @param String $name
      * @return string
      */
     private function createDirectory($name)
@@ -252,7 +256,7 @@ class PackageGeneratorController extends Controller
 
 
     /**
-     * @param $modelName
+     * @param String $modelName
      */
     private function createMenuItem($modelName)
     {
@@ -269,7 +273,7 @@ class PackageGeneratorController extends Controller
         //read the entire string
         $file = file_get_contents($fileName);
 
-        if (!str_contains($file , $fullUrl)) {
+        if (!str_contains($file, $fullUrl)) {
 
             //replace something in the file string - this is a VERY simple example
             $file = str_replace("$oldString", "$newString", $file);
@@ -280,7 +284,7 @@ class PackageGeneratorController extends Controller
     }
 
     /**
-     * @param $modelName
+     * @param String $modelName
      */
     private function addRoutes($modelName)
     {
@@ -303,11 +307,11 @@ class PackageGeneratorController extends Controller
     }
 
     /**
-     * @param $modelName
-     * @param $route
-     * @param $method
+     * @param Model $modelName
+     * @param String $route
+     * @param String $method
      */
-    private function addRoute($modelName, $route, $method)
+    private function addRoute(Model $modelName, $route, $method)
     {
         $oldString = "//{{replace}}";
 
