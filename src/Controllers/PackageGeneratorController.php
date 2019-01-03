@@ -3,8 +3,8 @@
 namespace YoweliKachala\PackageGenerator\Controllers;
 
 use App\Http\Controllers\Controller;
-use Faker\Factory;
-use Illuminate\Database\Eloquent\Model;
+use YoweliKachala\PackageGenerator\Commands\SetupCommand;
+use YoweliKachala\PackageGenerator\Helpers\SetupHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -56,6 +56,8 @@ class PackageGeneratorController extends Controller
      */
     public function finish()
     {
+
+        SetupCommand::CopyNewRouteFile();
 
         $modelsPath = base_path() . '/app/Models';
 
@@ -125,6 +127,19 @@ class PackageGeneratorController extends Controller
 
 
         Artisan::call('create:controller', ['name' => $name . 'Controller']);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function deleteModule(Request $request)
+    {
+        /** @var Module $module */
+        $module = Module::find($request->moduleId);
+        $module->delete();
+
+        return ["Deleted"];
     }
 
     /**

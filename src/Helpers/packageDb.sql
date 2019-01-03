@@ -25,6 +25,7 @@ CREATE TABLE module_attributes
 (
   id        INTEGER NOT NULL,
   module_id INTEGER,
+  name      VARCHAR(255),
   desc      VARCHAR(255)
 );
 CREATE UNIQUE INDEX module_attributes_id_uindex

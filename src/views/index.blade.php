@@ -56,8 +56,28 @@
                                         <div class="module">
                                             <h5>
                                                 {{ $module->name }}
-                                                <span class="text-success" id="addAttribute">+</span>
+                                                <span class="text-danger removeModule"
+                                                      value="{{ $module->id }}">-</span>
+                                                <span style="font-size: 12px; padding: 6px"
+                                                      class="float-right addAttribute" value="{{ $module->id }}">Add Attr</span>
                                             </h5>
+                                            <form class="form-inline">
+                                                <input class="form-control form-control-sm" size="8" type="text"
+                                                       name="name" id="name" placeholder="name"/>
+
+                                                <select class="form-control form-control-sm" name="type" id="type"
+                                                        placeholder="type">
+                                                    <option>One</option>
+                                                    <option>Two</option>
+                                                    <option>Three</option>
+                                                </select>
+                                                <input class="form-control form-control-sm" size="5" type="checkbox"
+                                                       name="unsigned" id="unsigned"/>
+                                                <input class="form-control form-control-sm" size="5" type="checkbox"
+                                                       name="unique" id="unique"/>
+                                                <button>Save</button>
+                                                <button>Done</button>
+                                            </form>
                                             @foreach($module->ModuleAttribute as $attribute)
                                                 <div>{{
                                                     $attribute->name . ", " .
@@ -84,11 +104,10 @@
 
             getMessage();
             var moduleName = $("#module-name");
-            var addModule = $("#add-module");
             var moduleSave = $("#save-module");
 
             var projectName = $("#project-name");
-            var addAttribute = $("#addAttribute");
+            var removeModule = $(".removeModule");
             var projectAdd = $("#project-add");
             var projectEdit = $("#project-edit");
             var projectSave = $("#project-save");
@@ -98,14 +117,14 @@
             moduleSave.click(function () {
                 var name = moduleName.val();
                 addModuleToDb(name);
-                
+
             });
 
             function getMessage() {
                 $.ajax({
                     type: 'GET',
                     dataType: 'json',
-                    url: 'project',
+                    url: '{{ url('project') }}',
                     success: function (data) {
                         if (data.project !== null) {
                             projectExists(data.project);
@@ -116,8 +135,21 @@
                 });
             }
 
-            addAttribute.click(function () {
-                alert('mean');
+            removeModule.click(function () {
+
+                var moduleId = $(this).attr('value');
+
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {moduleId: moduleId},
+                    url: '{{ url('delete-module') }}',
+                    success: function (data) {
+                        alert(data);
+                        location.reload();
+                    }
+                });
+
             });
 
             projectSave.click(function () {
@@ -160,7 +192,7 @@
             function addProject(name) {
                 $.ajax({
                     type: 'POST',
-                    url: 'add',
+                    url: '{{ url('add') }}',
                     data: {name: name},
                     success: function (data) {
                         console.log(data);
@@ -171,19 +203,22 @@
             finish.click(function () {
                 $.ajax({
                     type: 'GET',
-                    url: 'finish',
+                    url: '{{ url('finish') }}',
                     success: function (data) {
                         console.log(data);
                     }
                 });
             });
 
+            /**
+             * Add module to databse
+             * */
             function addModuleToDb(name) {
 
                 if (name !== '') {
                     $.ajax({
                         type: 'POST',
-                        url: 'add-module',
+                        url: '{{ url('add-module') }}',
                         data: {name: name},
                         success: function (data) {
                             console.log(data);
@@ -193,7 +228,6 @@
                 } else {
                     alert('name cannot be empty');
                 }
-
 
             }
 

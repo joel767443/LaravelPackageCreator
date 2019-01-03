@@ -18,7 +18,7 @@ class SetupHelper
     {
         if (!file_exists(database_path() . '/database.sqlite')) {
             exec('touch ' . database_path() . '/database.sqlite');
-            exec('chown www-data ' . database_path() . '/database.sqlite');
+            chmod(database_path() . '/database.sqlite', 0777);
             Self::migrateDb();
         }
 
@@ -48,4 +48,5 @@ class SetupHelper
         $path = __DIR__ . '/packageDb.sql';
         DB::unprepared(file_get_contents($path));
     }
+
 }

@@ -56,11 +56,14 @@ class SetupCommand extends Command
         Artisan::call('serve');
     }
 
-
-    private function CopyNewRouteFile()
+    /**
+     * Replace the route file after an update
+     */
+    public static function CopyNewRouteFile()
     {
-        copy(__DIR__ . '/stubs/web.stub',
+        copy( __DIR__ . '/stubs/web.stub',
             base_path() . '/routes/web.php'
         );
     }
+
 }
